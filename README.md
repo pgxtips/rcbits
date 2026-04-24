@@ -13,3 +13,17 @@ need to install fzf & fd-find
 sudo apt install fzf
 sudo apt install fd-find
 ```
+
+## vim bits
+- requires: fzf, ripgrep & vim
+```
+_live_grep() {
+        local result
+        result=$(echo -n  \
+                | fzf --disabled --bind "change:reload:rg -n -i {q} || true" \
+                | awk 'BEGIN {FS=":"} { print "+" $2 " " $1 }' \
+        )
+        [ -n "$result" ] && vim $result
+}
+bind -x '"\C-g": _live_grep'
+```
