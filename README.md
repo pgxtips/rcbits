@@ -2,10 +2,12 @@
 
 ## FZF stuff, to allow fzf tab completion
 ```
+[ -f /usr/share/bash-completion/completions/fzf ] && source /usr/share/bash-completion/completions/fzf
+[ -f /usr/share/doc/fzf/examples/key-bindings.bash ] && source /usr/share/doc/fzf/examples/key-bindings.bash
 _fzf_compgen_path() { fdfind --hidden --follow --exclude .git . "$1"; }
 _fzf_compgen_dir()  { fdfind --type d --hidden --follow --exclude .git . "$1"; }
 export FZF_COMPLETION_TRIGGER="~~"
-[ -f /usr/share/bash-completion/completions/fzf ] && source /usr/share/bash-completion/completions/fzf
+export FZF_CTRL_T_COMMAND='fdfind --hidden --follow --exclude .git .'
 ```
 need to install fzf & fd-find
 
