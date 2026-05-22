@@ -29,3 +29,35 @@ _live_grep() {
 }
 bind -x '"\C-g": _live_grep'
 ```
+
+## tmux bits
+```
+tssh() {
+    if [[ $# -eq 0 ]]; then
+        echo "Usage: tssh host1 [host2 ...]" >&2
+        return 1
+    fi
+
+    local hosts=("$@")
+
+    if [[ -n "$TMUX" ]]; then
+        local window
+        window=$(tmux new-window -P -F '#{session_name}:#{window_index}' "ssh ${hosts[0]}")
+        for host in "${hosts[@]:1}"; do
+            tmux split-window -t "$window" "ssh $host"
+            tmux select-layout -t "$window" tiled
+        done
+        tmux select-layout -t "$window" tiled
+        tmux select-window -t "$window"
+    else
+        local session="tssh-$$"
+        tmux new-session -d -s "$session" "ssh ${hosts[0]}"
+        for host in "${hosts[@]:1}"; do
+            tmux split-window -t "$session" "ssh $host"
+            tmux select-layout -t "$session" tiled
+        done
+        tmux select-layout -t "$session" tiled
+        tmux attach-session -t "$session"
+    fi
+}
+```
